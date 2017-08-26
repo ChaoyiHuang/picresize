@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: $$PICRESIZE_JOB$$
+spec:
+  template:
+    metadata:
+      labels:
+        app: picresize-at-edge-node
+    spec:
+      containers:
+      - name: $$PICRESIZE_CONTAINER$$
+        image: joehuang/picresize
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+          - name: TARGETURL
+            value: http://114.115.138.63:8888/upload/
+          - name: SRCURL
+            value: http://114.115.138.63:8888/static/$$SRCPNG$$
+      $$NODE_SELECTOR$$
+        $$HOSTNAME_SELECTOR$$
+      restartPolicy: Never
