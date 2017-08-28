@@ -17,11 +17,11 @@ picresize:
   picture with two small ones, then upload the small ones to the picserver. picresize container
   will exit after the resizing job is finished. picresize must be compiled linking staticly, so that
   the container could work using alpine as base image.
+
+    CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags '-s' -o picresize picresize.go
   
   During the demo, picresize container image is registered in each edge node, but not in an public
   avaialabe image registry: just becasue I have no account on any public image registry.
 
-  CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags '-s' -o picresize picresize.go
-  
 How to register an edge node to the server
   *********
