@@ -20,6 +20,8 @@ picresize:
   
   During the demo, picresize container image is registered in each edge node, but not in an public
   avaialabe image registry: just becasue I have no account on any public image registry.
+
+  CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags '-s' -o picresize picresize.go
   
 How to register an edge node to the server
   *********

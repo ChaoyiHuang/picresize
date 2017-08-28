@@ -84,7 +84,7 @@ func postFile(filename string, targetUrl string) error {
     return nil
 }
 
-func uploadHandler(srcURL string, targetURL string) {
+func uploadHandler(srcURL string, targetURL string, nodeName string) {
 
     // resize to 128 and 256 width respectively
     // open image on web server
@@ -96,7 +96,7 @@ func uploadHandler(srcURL string, targetURL string) {
 
     _, fileName := path.Split(srcURL)
 
-    dest1 := "./" + fileName + ".128.png"
+    dest1 := "./" + fileName + "." + nodeName + ".128.png"
     ResizePng(resp.Body, 128, dest1)
     resp.Body.Close()
     postFile(dest1, targetURL)
@@ -108,7 +108,7 @@ func uploadHandler(srcURL string, targetURL string) {
         fmt.Println(err)
         return
     }
-    dest2 := "./" + fileName + ".256.png"
+    dest2 := "./" + fileName + "." + nodeName + ".256.png"
     ResizePng(resp2.Body, 256, dest2)
     postFile(dest2, targetURL)
 }
@@ -116,17 +116,20 @@ func uploadHandler(srcURL string, targetURL string) {
 
 func main() {
 
-    var targetURL, srcURL string
+    var targetURL, srcURL, nodeName string
 
     flag.StringVar(&targetURL, "TARGETURL",
         "http://114.115.138.63:8888/upload/", "the uploading URL")
     flag.StringVar(&srcURL, "SRCURL",
         "http://114.115.138.63:8888/static/Tricircle_view.png", "the file to be resized")
+    flag.StringVar(&nodeName, "MY_NODE_NAME",
+        "unknown", "the node where the container is running on")
 
     flag.Parse()
 
     fmt.Println("targetURL:", targetURL)
     fmt.Println("srcURL:", srcURL)
+    fmt.Println("nodeName", nodeName)
 
-    uploadHandler(srcURL, targetURL)
+    uploadHandler(srcURL, targetURL, nodeName)
 }

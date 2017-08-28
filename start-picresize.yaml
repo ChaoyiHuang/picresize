@@ -24,6 +24,10 @@ spec:
             value: http://114.115.138.63:8888/upload/
           - name: SRCURL
             value: http://114.115.138.63:8888/static/$$SRCPNG$$
+          - name: MY_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
       $$NODE_SELECTOR$$
         $$HOSTNAME_SELECTOR$$
       restartPolicy: Never

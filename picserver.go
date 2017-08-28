@@ -15,10 +15,22 @@ import (
 )
 
 
+const FIRST_EDGENODE_POS = 2
+const MAX_EDGENODES = 100
+const ANY_EDGENODE = "any"
+const START_PICRESIZE_TEMPLATE = "start-picresize.yaml"
+const SERVER_PORT = "8888"
+const GRAFANA_PORT = "3000"
+const KIBANA_PORT = "5601"
+const PROMETHEUS_PORT = "9090"
+const KUBERNETES_PORT = "9999"
+const ADMIN_SERVICES_HOST = "114.115.138.63"
+
 func enumNodes(destURL string) []string {
 
     var nodeList []string
-    for count := 2; count < 100; count++ {
+
+    for count := FIRST_EDGENODE_POS; count < MAX_EDGENODES; count++ {
         cmdStr := fmt.Sprintf("/usr/bin/kubectl" +
             " get nodes | awk 'NR==%d {print $1}'", count)
         cmd := exec.Command("sh", "-c", cmdStr)
@@ -44,6 +56,11 @@ func processPic(edgenode string, filename string) {
     edgenode = strings.TrimSpace(edgenode)
     filename = strings.TrimSpace(filename)
 
+    if edgenode == ANY_EDGENODE {
+        //let kubernetes to descide which edge node will be schedule
+        edgenode = ""
+    }
+
     if filename != "" {
         srcpng = filename
     } else { return }
@@ -61,7 +78,7 @@ func processPic(edgenode string, filename string) {
     uuid := string(uuidOut)
     uuid = strings.TrimSpace(uuid)
 
-    yamlFile, err := ioutil.ReadFile("start-picresize.yaml")
+    yamlFile, err := ioutil.ReadFile(START_PICRESIZE_TEMPLATE)
     if err != nil {
         fmt.Println(err)
     }
@@ -130,7 +147,6 @@ func reviewPic(w http.ResponseWriter, edgenode string,
     imgList := "<h1>The resized pictures handled by " + edgenode + "</h1>"
     for _, f := range files {
         img := fmt.Sprintf("<br><br><br><img src=http://%s/%s /img>", server_host, f)
-        //img := fmt.Sprintf("<br><img src=./%s /img>", f)
         imgList = imgList + img
     }
 
@@ -147,17 +163,21 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
         "<li><a href=\"http://%s/review\">review resized pictures</a></li></ul>" +
         "<br><br><br><br><br><br>" +
         "<h1>!!! Links only for administration !!!</h1>" +
-        "<ul><li><a href=\"http://114.115.138.63:8888/admin\">If you are administrator, click here</a></li></ul>",
-        r.Host, r.Host)
+        "<ul><li><a href=\"http://%s/admin\">If you are administrator, click here</a></li></ul>",
+        r.Host, r.Host, r.Host)
 }
 
 
 func adminHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "<h1>Welcome to edge nodes administration</h1>" +
-        "<ul><li><a href=\"http://114.115.138.63:3000\">Monitoring Dashboard of Grafana+Promethieus</a></li><br><br>" +
-        "<li><a href=\"http://114.115.138.63:9090\">Monitoring Dashboard of Promethieus</a></li><br><br>" +
-        "<li><a href=\"http://114.115.138.63:5601\">Logging Dashboard of Kibana+ElasticSearch</a></li><br><br>" +
-        "<li><a href=\"http://114.115.138.63:9999\">Edge Nodes Management Dashboard of Kubernetes</a></li></ul>")
+        "<ul><li><a href=\"http://"+ADMIN_SERVICES_HOST+":"+GRAFANA_PORT+"\">" +
+            "Monitoring Dashboard of Grafana+Promethieus</a></li><br><br>" +
+        "<li><a href=\"http://"+ADMIN_SERVICES_HOST+":"+PROMETHEUS_PORT+"\">" +
+            "Monitoring Dashboard of Promethieus</a></li><br><br>" +
+        "<li><a href=\"http://"+ADMIN_SERVICES_HOST+":"+KIBANA_PORT+"\">" +
+            "Logging Dashboard of Kibana+ElasticSearch</a></li><br><br>" +
+        "<li><a href=\"http://"+ADMIN_SERVICES_HOST+":"+KUBERNETES_PORT+"\">" +
+            "Edge Nodes Management Dashboard of Kubernetes</a></li></ul>")
 }
 
 
@@ -170,6 +190,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
         nodeList := enumNodes("")
         var buff bytes.Buffer
         buff.WriteString("<select name=\"edgenode\">")
+        buff.WriteString("<option value=\"any\">any</option>")
         for _, node := range nodeList {
             buff.WriteString("<option value=\"" +
                 node + "\">" + node + "</option>")
@@ -231,5 +252,5 @@ func main() {
     http.HandleFunc("/admin/", adminHandler)
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
-    http.ListenAndServe(":8888", nil)
+    http.ListenAndServe(":"+SERVER_PORT, nil)
 }
