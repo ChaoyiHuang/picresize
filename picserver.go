@@ -15,6 +15,7 @@ import (
 )
 
 
+const PORTAL="http://114.115.138.63/picresizer"
 const FIRST_EDGENODE_POS = 2
 const MAX_EDGENODES = 100
 const ANY_EDGENODE = "any"
@@ -146,38 +147,13 @@ func reviewPic(w http.ResponseWriter, edgenode string,
 
     imgList := "<h1>The resized pictures handled by " + edgenode + "</h1>"
     for _, f := range files {
-        img := fmt.Sprintf("<br><br><br><img src=http://%s/%s /img>", server_host, f)
+        img := fmt.Sprintf("<br><br><br><img src=%s/%s /img>", PORTAL, f)
         imgList = imgList + img
     }
 
     fmt.Println("imgList: ", imgList)
 
     fmt.Fprintf(w, imgList)
-}
-
-
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "<h1>Welcome to picture resize service at edge node</h1>" +
-        "<ul>" +
-        "<li><a href=\"http://%s/upload\">uploading a picture</a></li><br><br>" +
-        "<li><a href=\"http://%s/review\">review resized pictures</a></li></ul>" +
-        "<br><br><br><br><br><br>" +
-        "<h1>!!! Links only for administration !!!</h1>" +
-        "<ul><li><a href=\"http://%s/admin\">If you are administrator, click here</a></li></ul>",
-        r.Host, r.Host, r.Host)
-}
-
-
-func adminHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "<h1>Welcome to edge nodes administration</h1>" +
-        "<ul><li><a href=\"http://"+ADMIN_SERVICES_HOST+":"+GRAFANA_PORT+"\">" +
-            "Monitoring Dashboard of Grafana+Promethieus</a></li><br><br>" +
-        "<li><a href=\"http://"+ADMIN_SERVICES_HOST+":"+PROMETHEUS_PORT+"\">" +
-            "Monitoring Dashboard of Promethieus</a></li><br><br>" +
-        "<li><a href=\"http://"+ADMIN_SERVICES_HOST+":"+KIBANA_PORT+"\">" +
-            "Logging Dashboard of Kibana+ElasticSearch</a></li><br><br>" +
-        "<li><a href=\"http://"+ADMIN_SERVICES_HOST+":"+KUBERNETES_PORT+"\">" +
-            "Edge Nodes Management Dashboard of Kubernetes</a></li></ul>")
 }
 
 
@@ -197,8 +173,9 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
         }
         buff.WriteString("</select>")
 
-        fmt.Fprintf(w, "<h1>please upload picture</h1>" +
-            "<form enctype=\"multipart/form-data\" action=\"/upload/\" method=\"post\">" +
+        fmt.Fprintf(w, "<h1>Resize picture at edge node</h1>" +
+            "<h2>please upload picture</h2>" +
+            "<form enctype=\"multipart/form-data\" action=\"/picresizer/upload/\" method=\"post\">" +
             "<input type=\"file\" name=\"uploadfile\" accept=\".png\" /><br><br><br>" +
             "please select an edge node to run" + buff.String() +
             "<br><br><br><input type=\"submit\" value=\"Submit\" />" + " </form>")
@@ -242,14 +219,13 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 func reviewHandler(w http.ResponseWriter, r *http.Request) {
     node_selected := ""
     filename      := ""
+    fmt.Println("reviewHandler: ", r.Host)
     reviewPic(w, node_selected, filename, r.Host)
 }
 
 func main() {
-    http.HandleFunc("/", homeHandler)
-    http.HandleFunc("/upload/", uploadHandler)
+    http.HandleFunc("/", uploadHandler)
     http.HandleFunc("/review/", reviewHandler)
-    http.HandleFunc("/admin/", adminHandler)
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
     http.ListenAndServe(":"+SERVER_PORT, nil)
