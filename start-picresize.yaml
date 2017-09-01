@@ -21,9 +21,9 @@ spec:
             memory: 100Mi
         env:
           - name: TARGETURL
-            value: http://114.115.138.63:8888/upload/
+            value: http://114.115.138.63/picresizer/upload/
           - name: SRCURL
-            value: http://114.115.138.63:8888/static/$$SRCPNG$$
+            value: http://114.115.138.63/picresizer/static/$$SRCPNG$$
           - name: MY_NODE_NAME
             valueFrom:
               fieldRef:
