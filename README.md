@@ -20,8 +20,11 @@ picresize:
 
     CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags '-s' -o picresize picresize.go
   
-  During the demo, picresize container image is registered in each edge node, but not in an public
-  avaialabe image registry: just becasue I have no account on any public image registry.
+  During the demo, picresize container image will be pulled from Docker hub if it's not in the
+  edge node for the first time. After that, local image will be used instead. You can also pull
+  the image manually:
+
+     docker pull joehuang/picresize
 
 How to register an edge node to the server
   *********
