@@ -1,3 +1,4 @@
+https://rentola.nl/en/listings/julianaplein-7-frankendael-1097dn-amsterdam-bc6773
 
 # picresize to demonstrate edge cloud computing as a service, based on Kubernetes
 
