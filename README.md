@@ -2,6 +2,7 @@ https://rentola.nl/en/listings/julianaplein-7-frankendael-1097dn-amsterdam-bc677
 
 https://www.kamer.nl/en/rent/apartment/amsterdam/463279/albert-cuypstraat/
 
+https://www.kamer.nl/en/rent/apartment/amsterdam/467594/albert-cuypstraat/
 
 # picresize to demonstrate edge cloud computing as a service, based on Kubernetes
 
