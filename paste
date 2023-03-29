@@ -1,0 +1,144 @@
+root@onap-huangchaoyi:~/sylva-core# cat environment-values/rke2-capd/values.yaml
+---
+
+units:
+  cluster:
+    kustomization_spec:
+      path: ./kustomize-units/cluster-manifests/rke2-capd/base
+  workload-cluster:
+    enabled: true
+    repo: sylva-core
+    kustomization_spec:
+      path: ./kustomize-units/cluster-manifests/rke2-capd/base
+
+  #FIXME: figure out why pivot works locally and not in gitlab ci... (whereas pivot work with kubadm-capd in ci)
+  pivot:
+    enabled: false
+
+cluster:
+  image: registry.gitlab.com/sylva-projects/sylva-elements/container-images/rke2-in-docker:v1-24-4-rke2r1
+  capi_providers:
+    infra_provider: capd
+    bootstrap_provider: cabpr
+  capd:
+    docker_host: unix:///var/run/docker.sock  # dynamically replaced in CI
+
+  cluster_external_ip: 172.18.0.100 # use the .100 (or any other that woudn't be assigned by Docker) IP from the local kind subnet, returned by: docker network inspect -f '{{json .}}' kind | jq -r .IPAM.Config[0].Subnet
+
+proxies:
+  # put your own proxy settings here if you need
+  http_proxy: ""
+  https_proxy: ""
+  no_proxy: ""
+
+# add your local docker.io registry mirror to avoid rate limitting if required
+dockerio_registry_mirror: ""
+
+env_type_ci: true
+root@onap-huangchaoyi:~/sylva-core#
+root@onap-huangchaoyi:~/sylva-core# export KUBECONFIG=/root/mangement-cluster-conf
+root@onap-huangchaoyi:~/sylva-core#
+root@onap-huangchaoyi:~/sylva-core# kubectl get cluster -A
+NAMESPACE     NAME    READY   KUBECONFIG
+fleet-local   local   true    local-kubeconfig
+root@onap-huangchaoyi:~/sylva-core#
+root@onap-huangchaoyi:~/sylva-core# kubectl get helmreleases sylva-units -o yaml | yq .status.conditions
+Command 'yq' not found, but can be installed with:
+snap install yq
+root@onap-huangchaoyi:~/sylva-core# apt install yq
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+
+No apt package "yq", but there is a snap with that name.
+Try "snap install yq"
+
+E: Unable to locate package yq
+root@onap-huangchaoyi:~/sylva-core# snap install yq
+error: cannot perform the following tasks:
+- Download snap "core18" (2721) from channel "stable" (Get https://canonical-bos01.cdn.snapcraftcontent.com/download-origin/canonical-lgw01/CSO04Jhav2yK0uz97cr0ipQRyqg0qQL6_2721.snap?interactive=1&token=1680087600_21d56c1b4fa7da1e307f35c6aca99ca1e7ddc721: dial tcp 91.189.91.43:443: connect: connection timed out)
+root@onap-huangchaoyi:~/sylva-core# snap install yq
+Download snap "core18" (2721) from channel "stable"                                                                 |
+Download snap "core18" (2721) from channel "stable"                                                                 \error: cannot perform the following tasks:
+- Download snap "core18" (2721) from channel "stable" (the download has been cancelled: context canceled)
+root@onap-huangchaoyi:~/sylva-core#
+root@onap-huangchaoyi:~/sylva-core#
+root@onap-huangchaoyi:~/sylva-core# kubectl get helmreleases sylva-units -o yaml
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  creationTimestamp: "2023-03-03T13:50:03Z"
+  finalizers:
+  - finalizers.fluxcd.io
+  generation: 1
+  labels:
+    app.kubernetes.io/instance: sylva-units
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: sylva-units
+    app.kubernetes.io/version: 0.0.0
+    helm.sh/chart: sylva-units-0.1.0_17c60444d721.1
+    kustomize.toolkit.fluxcd.io/name: sylva-units
+    kustomize.toolkit.fluxcd.io/namespace: default
+    suspend-on-pivot: "yes"
+    sylva-units.unit: sylva-units
+  name: sylva-units
+  namespace: default
+  resourceVersion: "2180"
+  uid: cdf07edc-6ce0-427f-b7b5-7016d6b771ac
+spec:
+  chart:
+    spec:
+      chart: charts/sylva-units
+      reconcileStrategy: Revision
+      sourceRef:
+        kind: GitRepository
+        name: sylva-core
+      version: '*'
+  install:
+    createNamespace: true
+    remediation:
+      remediateLastFailure: true
+      retries: 10
+  interval: 1m0s
+  releaseName: sylva-units
+  values:
+    git_repo_templates:
+      sylva-core:
+        existing_gitrepository: sylva-core
+    units:
+      cluster:
+        enabled: false
+  valuesFrom:
+  - kind: ConfigMap
+    name: management-cluster-bootstrap-values
+    optional: true
+    valuesKey: bootstrap.values.yaml
+  - kind: Secret
+    name: management-cluster-secrets
+    valuesKey: secrets
+  - kind: ConfigMap
+    name: management-cluster-values
+    valuesKey: values
+  - kind: ConfigMap
+    name: capo-cluster-resources
+    optional: true
+    targetPath: cluster.cluster_external_ip
+    valuesKey: allocated_ip
+status:
+  conditions:
+  - lastTransitionTime: "2023-03-03T13:50:20Z"
+    message: Release reconciliation succeeded
+    reason: ReconciliationSucceeded
+    status: "True"
+    type: Ready
+  - lastTransitionTime: "2023-03-03T13:50:20Z"
+    message: Helm install succeeded
+    reason: InstallSucceeded
+    status: "True"
+    type: Released
+  helmChart: default/default-sylva-units
+  lastAppliedRevision: 0.1.0+17c60444d721
+  lastAttemptedRevision: 0.1.0+17c60444d721
+  lastAttemptedValuesChecksum: 7dba4d632a9ba23956de07dee97965c579bdf299
+  lastReleaseRevision: 1
+  observedGeneration: 1
