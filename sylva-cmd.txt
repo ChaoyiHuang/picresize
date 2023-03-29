@@ -1,0 +1,404 @@
+    1  2023-03-01 20:38:36 root passwd root
+    2  2023-03-01 20:40:10 root git clone https://gitlab.com/sylva-projects/sylva-core.git
+    3  2023-03-01 20:40:26 root free
+    4  2023-03-01 20:40:33 root free -lh
+    5  2023-03-01 20:40:46 root cat /proc/cpuinfo 
+    6  2023-03-01 21:10:04 root sudo apt-get update
+    7  2023-03-01 21:10:53 root sudo mkdir -m 0755 -p /etc/apt/keyrings
+    8  2023-03-01 21:11:10 root curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    9  2023-03-01 21:11:30 root echo   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   10  2023-03-01 21:11:41 root sudo apt-get update
+   11  2023-03-01 21:11:53 root sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   12  2023-03-01 21:13:50 root sudo docker run hello-world
+   13  2023-03-01 21:14:12 root curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+   14  2023-03-01 21:15:06 root sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+   15  2023-03-01 21:15:18 root curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.17.0/kind-linux-amd64
+   16  2023-03-01 21:15:22 root c
+   17  2023-03-01 21:15:40 root chmod +x ./kind
+   18  2023-03-01 21:15:49 root sudo mv ./kind /usr/local/bin/kind
+   19  2023-03-01 21:16:23 root curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.3.3/clusterctl-linux-amd64 -o clusterctl
+   20  2023-03-01 21:18:10 root clusterctl version
+   21  2023-03-01 21:18:23 root sudo install -o root -g root -m 0755 clusterctl /usr/local/bin/clusterctl
+   22  2023-03-01 21:18:26 root clusterctl version
+   23  2023-03-01 21:18:48 root apt install jq
+   24  2023-03-01 21:19:22 root cat <<EOF | kind create cluster --name capd --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+extraMounts:
+ - hostPath: /var/run/docker.sock
+   containerPath: /var/run/docker.sock
+EOF
+
+   25  2023-03-01 21:19:48 root cat <<EOF | kind create cluster --name capd --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraMounts:
+    - hostPath: /var/run/docker.sock
+      containerPath: /var/run/docker.sock
+EOF
+
+   26  2023-03-01 21:42:41 root docker network inspect -f '{{json .}}' kind | jq -r .IPAM.Config[0].Subnet
+   27  2023-03-01 21:43:02 root ls
+   28  2023-03-01 21:43:06 root cd sylva-core/
+   29  2023-03-01 21:43:07 root ls
+   30  2023-03-01 21:43:08 root vim environment-values/rke2-capd/values.yaml
+   31  2023-03-01 21:43:40 root ls
+   32  2023-03-01 21:43:46 root vim environment-values/
+   33  2023-03-01 21:44:05 root vim charts/sylva-units/values.yaml 
+   34  2023-03-01 21:45:18 root ls
+   35  2023-03-01 21:47:09 root nohup ./bootstrap.sh environment-values/rke2-capd &
+   36  2023-03-01 21:47:14 root ls
+   37  2023-03-01 21:48:30 root ps aux|grep nohup
+   38  2023-03-01 21:48:48 root ps aux|grep ./boot
+   39  2023-03-01 21:48:59 root cat nohup.out 
+   40  2023-03-01 22:21:38 root ls
+   41  2023-03-01 22:21:46 root vim nohup.out 
+   42  2023-03-01 22:22:26 root cd /var/log/
+   43  2023-03-01 22:22:27 root ls
+   44  2023-03-01 22:23:02 root grep -r "helm-controller" .
+   45  2023-03-01 22:24:37 root kubetail -n capo-system -s 12h
+   46  2023-03-01 22:24:48 root apt install kubetail
+   47  2023-03-01 22:24:55 root ks
+   48* 2023-03-01 22:24:56 root ls[A
+   49  2023-03-01 22:24:59 root cd ,,
+   50  2023-03-01 22:25:13 root kubetail -n capo-system -s 12h
+   51  2023-03-01 22:25:22 root kubetail -n
+   52  2023-03-01 22:25:55 root kubectl list pods --all-namespaces
+   53  2023-03-01 22:26:03 root kubectl get pods --all-namespaces
+   54  2023-03-01 22:30:12 root kubetail -n kube-controller-manager-capd-control-plane -s 12h
+   55  2023-03-01 22:30:42 root kubetail -n flux-system -s 12h
+   56  2023-03-01 22:31:26 root kubetail -n flux-system
+   57  2023-03-01 22:33:30 root kubectl logs kustomize-controller-6c865469ff-zrxbz
+   58  2023-03-01 22:33:50 root kubectl logs -n flux-system  kustomize-controller-6c865469ff-zrxbz
+   59  2023-03-01 22:41:47 root kubetail -n flux-system -s 12h
+   60  2023-03-01 22:42:00 root kubetail -n flux-system -s 12h | grep error
+   61  2023-03-01 22:44:02 root kubetail -n flux-system -s 12h > flux.log
+   62  2023-03-01 23:41:41 root kubetail -n flux-system > flux.log
+   63  2023-03-03 20:46:01 root ls
+   64  2023-03-03 20:46:20 root grep -r "sylva" .
+   65  2023-03-03 20:46:26 root cd /home/
+   66  2023-03-03 20:46:27 root ls
+   67  2023-03-03 20:46:31 root cd ~
+   68  2023-03-03 20:46:32 root ls
+   69  2023-03-03 20:46:35 root cd s
+   70  2023-03-03 20:46:38 root cd sylva-core/
+   71  2023-03-03 20:46:39 root ls
+   72  2023-03-03 20:46:49 root vim nohup.out 
+   73  2023-03-03 20:50:42 root docker stop $(docker ps -aq)
+   74  2023-03-03 20:51:41 root docker rm $(docker ps -aq)
+   75  2023-03-03 20:51:48 root ps aux|grep kubelet
+   76  2023-03-03 20:51:53 root ps aux|grep kube
+   77  2023-03-03 20:51:57 root ps aux|grep flux
+   78  2023-03-03 20:52:11 root docker ps
+   79  2023-03-03 20:52:47 root echo "fs.inotify.max_user_watches = 524288" | sudo tee -a /etc/sysctl.conf
+   80  2023-03-03 20:52:55 root echo "fs.inotify.max_user_instances = 512" | sudo tee -a /etc/sysctl.conf
+   81  2023-03-03 20:53:19 root cat <<EOF | kind create cluster --name capd --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraMounts:
+    - hostPath: /var/run/docker.sock
+      containerPath: /var/run/docker.sock
+EOF
+
+   82  2023-03-03 20:53:53 root kubectl cluster-info --context kind-capd
+   83  2023-03-03 20:54:16 root kubectl cluster-info dump
+   84  2023-03-03 20:54:30 root kubectl cluster-info dump > bootcluster.info
+   85  2023-03-03 20:54:35 root vim bootcluster.info 
+   86  2023-03-03 20:56:11 root sudo sysctl -p /etc/sysctl.conf
+   87  2023-03-03 20:56:50 root history | grep value
+   88  2023-03-03 20:56:59 root cat environment-values/rke2-capd/values.yaml
+   89  2023-03-03 20:57:23 root cat charts/sylva-units/values.yaml
+   90  2023-03-03 20:57:28 root vim charts/sylva-units/values.yaml
+   91  2023-03-03 20:58:18 root history | grep value
+   92  2023-03-03 20:58:29 root ./bootstrap.sh environment-values/rke2-capd
+   93  2023-03-03 20:59:41 root cd ..
+   94  2023-03-03 20:59:43 root ls
+   95  2023-03-03 21:00:02 root mv sylva-core/ bk_sylva-core
+   96  2023-03-03 21:00:03 root ls
+   97  2023-03-03 21:00:09 root history | grep git
+   98  2023-03-03 21:00:19 root git clone https://gitlab.com/sylva-projects/sylva-core.git
+   99  2023-03-03 21:00:56 root ls
+  100  2023-03-03 21:01:29 root cp bk_sylva-core/environment-values/rke2-capd/values.yaml sylva-core/environment-values/rke2-capd/
+  101  2023-03-03 21:02:06 root cp bk_sylva-core/charts/sylva-units/values.yaml sylva-core/charts/sylva-units/
+  102  2023-03-03 21:02:12 root cd sylva-core/
+  103  2023-03-03 21:02:13 root ls
+  104  2023-03-03 21:02:26 root ./bootstrap.sh environment-values/rke2-capd
+  105  2023-03-03 21:29:35 root clusterctl describe cluster management-cluster --show-conditions all
+  106  2023-03-03 21:32:56 root ps aux|grep worker
+  107  2023-03-03 21:33:11 root ps aux|grep test-worker
+  108  2023-03-03 21:33:24 root ps aux|grep pivot
+  109  2023-03-03 21:33:29 root ps aux|grep kube
+  110  2023-03-03 21:33:51 root kubectl get cluster
+  111  2023-03-03 21:34:06 root kubectl get machine
+  112  2023-03-03 21:34:30 root clusterctl describe cluster management-cluster --show-conditions all
+  113  2023-03-03 21:34:56 root kuberctl get pods --all-namespaces
+  114  2023-03-03 21:35:03 root kubectl get pods --all-namespaces
+  115  2023-03-03 21:35:47 root clusterctl describe cluster management-cluster --show-conditions all
+  116  2023-03-03 21:38:15 root docker ps
+  117  2023-03-03 21:38:27 root docker ps -a
+  118  2023-03-03 21:38:33 root docker ps -all
+  119  2023-03-03 21:42:47 root docker ps
+  120  2023-03-03 21:43:20 root clusterctl describe cluster management-cluster --show-conditions all
+  121  2023-03-03 21:43:46 root docker ps -all
+  122  2023-03-03 21:47:06 root clusterctl describe cluster management-cluster --show-conditions all
+  123  2023-03-03 21:47:47 root docker ps -all
+  124  2023-03-03 21:47:53 root clusterctl describe cluster management-cluster --show-conditions all
+  125  2023-03-03 21:48:16 root clusterctl describe cluster
+  126  2023-03-03 21:48:23 root clusterctl --help
+  127  2023-03-03 21:51:43 root clusterctl describe cluster management-cluster --show-conditions all
+  128  2023-03-03 21:53:12 root clusterctl config cluster
+  129  2023-03-03 21:54:05 root clusterctl config repositories
+  130  2023-03-03 21:57:58 root kubectl get clusters --all-namespaces
+  131  2023-03-03 21:58:40 root clusterctl describe cluster management-cluster --show-conditions all
+  132  2023-03-03 21:58:52 root docker ps
+  133  2023-03-03 21:59:09 root ps aux|grep fluc
+  134  2023-03-03 21:59:11 root ps aux|grep flux
+  135  2023-03-03 21:59:18 root ps aux|grep fluxcd
+  136* 2023-03-03 21:59:22 root 
+  137* 2023-03-03 22:02:24 root clusterctl describe cluster management-clusterkubectl get cluster
+  138  2023-03-03 22:05:05 root kubectl get cluster
+  139  2023-03-03 22:05:32 root kubectl get machine
+  140  2023-03-03 22:10:32 root syvalctl --help
+  141  2023-03-03 22:10:43 root sylvactl --help
+  142  2023-03-03 22:12:53 root ps aux|grep calico
+  143  2023-03-03 22:13:37 root ps aux|grep rancher
+  144  2023-03-03 22:20:03 root grep -r "rancher" .
+  145  2023-03-03 22:21:07 root grep -r "rancher-ui" .
+  146  2023-03-03 22:21:13 root grep -r "rancherui" .
+  147  2023-03-03 22:21:31 root grep -r "rancher" .
+  148  2023-03-03 22:21:32 root ls
+  149  2023-03-03 22:21:41 root cd charts/sylva-units/
+  150  2023-03-03 22:21:42 root ls
+  151  2023-03-03 22:21:47 root vim values.
+  152  2023-03-03 22:21:55 root vim values.yaml 
+  153  2023-03-03 22:28:25 root kubectl get nodes -o wide
+  154  2023-03-03 22:29:27 root ps aux|grep test-worker
+  155  2023-03-03 22:29:43 root ps aux|grep workload
+  156  2023-03-03 22:29:48 root ps aux|grep test-work
+  157  2023-03-03 22:36:26 root vim values.yaml 
+  158  2023-03-03 22:38:25 root ps aux|grep first-workload-cluster
+  159  2023-03-03 22:38:36 root history | grep describe
+  160  2023-03-03 22:38:53 root clusterctl describe cluster first-workload-cluster
+  161  2023-03-03 22:39:30 root history | grep kubectl
+  162  2023-03-03 22:39:39 root kubectl get clusters --all-namespaces
+  163  2023-03-03 22:40:54 root kubectl get pods --all-namespaces
+  164  2023-03-03 22:45:30 root kubectl get kustomization
+  165  2023-03-03 22:47:14 root clusterctl describe cluster management-cluster --show-conditions all
+  166  2023-03-03 22:51:49 root ps aux|grep first
+  167  2023-03-03 22:53:43 root kubectl config view
+  168  2023-03-03 23:02:13 root https://127.0.0.1:40659
+  169  2023-03-03 23:27:20 root cd ,,
+  170  2023-03-03 23:27:22 root cd ..
+  171  2023-03-03 23:27:25 root ls
+  172  2023-03-03 23:27:26 root cd ..
+  173  2023-03-03 23:27:28 root ls
+  174  2023-03-03 23:27:44 root kubectl get clusters
+  175  2023-03-03 23:28:53 root kubectl get secret management-cluster-kubeconfig -o jsonpath='{.data.value}' | base64 -D > mangement-cluster-conf
+  176  2023-03-03 23:29:16 root kubectl get secret management-cluster-kubeconfig -o jsonpath='{.data.value}' | base64 -d > mangement-cluster-conf
+  177  2023-03-03 23:29:18 root ls
+  178  2023-03-03 23:29:48 root pwd
+  179  2023-03-03 23:30:01 root export KUBECONFIG=/root/ mangement-cluster-conf
+  180  2023-03-03 23:30:11 root export KUBECONFIG=/root/mangement-cluster-conf
+  181  2023-03-03 23:30:21 root kubectl get clusters
+  182  2023-03-03 23:30:34 root kubectl get clusters --all-namespaces
+  183  2023-03-03 23:31:24 root unset KUBECONFIG
+  184  2023-03-03 23:31:28 root kubectl get clusters --all-namespaces
+  185  2023-03-03 23:34:16 root export KUBECONFIG=/root/mangement-cluster-conf
+  186  2023-03-03 23:34:31 root kubectl get pods --all-namespaces
+  187  2023-03-03 23:43:12 root cd sylva-core/
+  188  2023-03-03 23:43:25 root grep -r "cattle-system" .
+  189  2023-03-03 23:43:57 root cd docs/
+  190  2023-03-03 23:43:57 root ls
+  191  2023-03-03 23:44:05 root vim How-tos.md 
+  192  2023-03-03 23:53:05 root kubectl get pods --all-namespaces
+  193  2023-03-03 23:55:02 root kubectl -n cattle-system get pods 
+  194  2023-03-03 23:57:23 root docker ps | grep management-cluster
+  195  2023-03-03 23:58:17 root docker exec -it management-cluster-control-plane-2f56x sh -c "/var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml  get ing -A"
+  196  2023-03-03 23:59:25 root cat /etc/hosts | grep rancher.sylva
+  197  2023-03-04 00:08:26 root docker ps | grep management-cluster
+  198  2023-03-04 00:08:57 root curl 172.18.0.4
+  199  2023-03-04 00:10:12 root ifcongig
+  200  2023-03-04 00:10:20 root ifconfig
+  201  2023-03-04 00:10:49 root ping 172.18.0.1
+  202  2023-03-04 00:10:54 root ping 172.18.0.4
+  203  2023-03-04 00:14:38 root ping 172.18.0.100
+  204  2023-03-04 00:20:50 root docker ps | grep management-cluster
+  205  2023-03-04 00:20:59 root docke ps
+  206  2023-03-04 00:21:05 root docker ps
+  207  2023-03-04 00:21:22 root kubectl get pods --all-namespaces
+  208  2023-03-10 00:01:54 root kubectl get pods --all-namespaces | grep Completed
+  209  2023-03-10 00:02:24 root kubectl get pods --all-namespaces | grep ImgPullErr
+  210  2023-03-10 00:02:43 root history
+  211  2023-03-10 00:03:17 root kubectl get clusters --all-namespaces
+  212  2023-03-10 00:03:44 root ps aux|grep test
+  213  2023-03-10 00:06:09 root clusterctl describe cluster management-cluster --show-conditions all
+  214  2023-03-10 00:07:01 root ps aux|grep first
+  215  2023-03-10 00:07:08 root ps aux|grep workload
+  216  2023-03-10 00:30:07 root kubectl get clusters
+  217  2023-03-10 00:30:17 root kubectl get clusters --all-namespaces
+  218  2023-03-10 00:30:51 root kubectl describe clusters local
+  219  2023-03-10 00:31:12 root kubectl describe clusters local -n fleet-local
+  220  2023-03-10 00:31:31 root cd ..
+  221  2023-03-10 00:31:33 root ls
+  222  2023-03-10 00:31:44 root kubectl describe clusters local -n fleet-local > fleet-local.txt
+  223  2023-03-10 00:31:47 root vim fleet-local.txt 
+  224  2023-03-10 00:36:13 root history | grep management 
+  225  2023-03-10 00:37:33 root ls
+  226  2023-03-10 00:38:29 root export KUBECONFIG=/root/mangement-cluster-conf
+  227  2023-03-10 00:38:42 root kubectl get clusters --all-namespaces
+  228  2023-03-10 00:39:47 root ps aux|grep first
+  229  2023-03-10 00:43:45 root kubectl get cluster
+  230  2023-03-10 00:43:55 root kubectl get clusters --all-namespaces
+  231  2023-03-10 00:44:36 root clsuterctl describe local -n fleet-local
+  232  2023-03-10 00:44:45 root clusterctl describe local -n fleet-local
+  233  2023-03-10 00:44:59 root clusterctl describe local --n fleet-local
+  234  2023-03-10 00:45:12 root clusterctl describe local
+  235  2023-03-10 00:45:27 root clusterctl describe cluster local
+  236  2023-03-10 00:45:38 root clusterctl describe cluster local -n fleet-local
+  237  2023-03-10 00:50:53 root clusterctl --config ./mangement-cluster-conf  describe cluster local -n fleet-local
+  238  2023-03-10 00:51:09 root clusterctl --config=./mangement-cluster-conf  describe cluster local -n fleet-local
+  239  2023-03-11 16:28:28 root docker ps | grep management-cluster
+  240  2023-03-11 16:29:21 root curl 127.0.0.1:40533-
+  241  2023-03-11 16:29:25 root curl 127.0.0.1:40533
+  242  2023-03-11 16:29:42 root curl https://127.0.0.1:40533
+  243  2023-03-11 16:30:56 root docker exec -it management-cluster-control-plane-2f56x sh -c "/var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml  get ing -A"
+  244  2023-03-11 16:31:13 root ifconfig
+  245  2023-03-11 16:31:35 root docker exec -it management-cluster-control-plane-2f56x sh -c "/var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml  get ing -A"
+  246  2023-03-11 16:31:56 root curl http://172.18.0.4
+  247  2023-03-11 16:32:23 root ping 172.18.0.4
+  248  2023-03-11 16:35:20 root vim /etc/hosts
+  249  2023-03-11 16:35:58 root cat /etc/hosts
+  250  2023-03-11 16:36:20 root docker exec -it management-cluster-control-plane-2f56x sh -c "/var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml  get ing -A"
+  251  2023-03-11 16:36:32 root vim /etc/hosts
+  252  2023-03-11 16:38:10 root curl rancher.sylva
+  253  2023-03-11 16:38:25 root curl http://172.18.0.4
+  254  2023-03-11 16:38:46 root ps aux|grep first
+  255  2023-03-11 16:38:55 root kubectl get clusters --all-namespaces
+  256  2023-03-11 16:39:01 root unset KUBECONFIG
+  257  2023-03-11 16:39:04 root kubectl get clusters --all-namespaces
+  258  2023-03-11 16:39:18 root export KUBECONFIG=/root/mangement-cluster-conf
+  259  2023-03-11 16:39:22 root kubectl get clusters --all-namespaces
+  260* 2023-03-11 16:42:55 root history | grep describ
+  261  2023-03-11 16:44:54 root clusterctl describe local
+  262  2023-03-11 16:45:03 root clusterctl describe -h
+  263  2023-03-11 16:45:10 root clusterctl --help
+  264  2023-03-11 16:45:27 root clusterctl describe --help
+  265  2023-03-11 16:45:48 root kubectl get clusters --all-namespaces
+  266  2023-03-11 17:02:53 root clusterctl describe --namespace fleet-local local
+  267  2023-03-11 17:05:23 root clusterctl describe -n fleet-local local
+  268  2023-03-11 17:05:51 root clusterctl describe fleet-local local
+  269  2023-03-11 17:06:04 root clusterctl describe  local
+  270  2023-03-11 17:06:26 root clusterctl describe  -h
+  271  2023-03-11 17:06:35 root clusterctl describe  --help
+  272  2023-03-11 17:06:44 root clusterctl --help
+  273  2023-03-11 17:08:48 root clusterctl --help describe
+  274  2023-03-11 17:12:19 root clusterctl describe cluster local -n fleet-local
+  275  2023-03-11 17:12:36 root kubectl get clusters --all-namespaces
+  276  2023-03-11 17:12:46 root clusterctl describe cluster  -n fleet-local
+  277  2023-03-11 17:12:58 root clusterctl describe cluster fleet-local  -n fleet-local
+  278  2023-03-11 17:13:07 root clusterctl describe cluster local -n fleet-local
+  279  2023-03-11 19:07:01 root export KUBECONFIG=/root/mangement-cluster-conf
+  280  2023-03-11 19:07:08 root kubectl get clusters --all-namespaces
+  281  2023-03-11 19:07:20 root clusterctl describe cluster local -n fleet-local
+  282  2023-03-11 19:09:48 root clusterctl get kubeconfig local
+  283  2023-03-11 19:10:17 root clusterctl get kubeconfig local -n fleet-local
+  284  2023-03-11 19:10:35 root clusterctl get kubeconfig local -n fleet-local > local.config
+  285  2023-03-11 19:10:37 root ls
+  286  2023-03-11 19:11:07 root export KUBECONFIG=/root/local.config 
+  287  2023-03-11 19:11:20 root kubectl get pods --all-namespaces
+  288  2023-03-11 19:11:39 root kubectl get pods
+  289  2023-03-11 19:11:50 root kubectl get cluster
+  290  2023-03-11 19:13:00 root kubectl get pods --all-namespaces
+  291  2023-03-11 19:15:31 root cat fleet-local.txt 
+  292  2023-03-11 19:22:23 root ls
+  293  2023-03-11 19:23:18 root cd environment-values/rke2-capd/
+  294  2023-03-11 19:23:19 root ls
+  295  2023-03-11 19:23:24 root vim values.yaml 
+  296  2023-03-11 19:23:55 root cd ..
+  297  2023-03-11 19:23:58 root ls
+  298  2023-03-11 19:24:11 root grep -r "first-" .
+  299  2023-03-11 19:24:39 root vim charts/sylva-units/values.yaml 
+  300  2023-03-11 19:27:33 root ps aux|grep first
+  301  2023-03-11 19:27:49 root ps aux|grep test-work
+  302  2023-03-13 17:29:43 root history 
+  303  2023-03-13 17:31:10 root export KUBECONFIG=/root/mangement-cluster-conf 
+  304  2023-03-13 17:31:41 root kubectl  get  clustes -A
+  305  2023-03-13 17:31:49 root kubectl  get  clusters -A
+  306  2023-03-21 21:39:59 root ls
+  307  2023-03-21 21:40:18 root cat charts/sylva-units/values.yaml 
+  308  2023-03-21 21:40:54 root vim charts/sylva-units/values.yaml 
+  309  2023-03-21 21:54:43 root cd ..
+  310  2023-03-21 21:54:44 root ls
+  311  2023-03-21 21:54:52 root cd sylva-core/
+  312  2023-03-21 21:54:53 root ls
+  313  2023-03-21 21:55:06 root cd environment-values/
+  314  2023-03-21 21:55:07 root ls
+  315  2023-03-21 21:55:17 root cd rke2-capd/
+  316  2023-03-21 21:55:17 root ls
+  317  2023-03-21 21:55:23 root vim values.yaml 
+  318  2023-03-29 15:44:53 root ls
+  319  2023-03-29 15:45:03 root vim values.yaml 
+  320  2023-03-29 15:45:25 root cd ..
+  321  2023-03-29 15:45:26 root ls
+  322  2023-03-29 15:45:27 root cd ..
+  323  2023-03-29 15:45:28 root ls
+  324  2023-03-29 15:46:00 root cd charts/sylva-units/templates/
+  325  2023-03-29 15:46:02 root ls
+  326  2023-03-29 15:46:07 root cd ..
+  327  2023-03-29 15:46:08 root ls
+  328  2023-03-29 15:46:13 root history
+  329  2023-03-29 15:46:45 root kubectl get cluster -A
+  330  2023-03-29 15:47:00 root export KUBECONFIG=/root/mangement-cluster-conf 
+  331  2023-03-29 15:47:13 root kubectl get cluster -A
+  332  2023-03-29 15:47:28 root ls
+  333  2023-03-29 15:47:37 root vim values.yaml 
+  334  2023-03-29 15:52:26 root history | rke2
+  335  2023-03-29 15:52:32 root history | grep rke2
+  336  2023-03-29 15:55:24 root cd ..
+  337  2023-03-29 15:55:25 root ls
+  338  2023-03-29 15:55:28 root cd ..
+  339  2023-03-29 15:55:28 root ls
+  340  2023-03-29 15:55:43 root cat environment-values/rke2-capd/values.yaml 
+  341  2023-03-29 15:55:53 root export KUBECONFIG=/root/mangement-cluster-conf 
+  342  2023-03-29 15:56:07 root kubectl get cluster -A
+  343  2023-03-29 15:58:04 root kubectl get helmreleases sylva-units -o yaml | yq .status.conditions
+  344  2023-03-29 15:58:15 root apt install yq
+  345  2023-03-29 15:58:28 root snap install yq
+  346  2023-03-29 16:05:42 root kubectl get helmreleases sylva-units -o yaml
+  347  2023-03-29 16:12:30 root cd ..
+  348  2023-03-29 16:12:34 root ls
+  349  2023-03-29 16:12:52 root vim sylva-rke2-capd-output.txt
+  350  2023-03-29 16:13:10 root git clone https://github.com/ChaoyiHuang/picresize
+  351  2023-03-29 16:13:18 root cd picresize/
+  352  2023-03-29 16:13:19 root ls
+  353  2023-03-29 16:13:21 root cd ..
+  354  2023-03-29 16:13:22 root ls
+  355  2023-03-29 17:33:31 root kubectl get clusters.cluster.x-k8s.io -A
+  356  2023-03-29 17:34:25 root export KUBECONFIG=/root/mangement-cluster-conf 
+  357  2023-03-29 17:34:30 root kubectl get clusters.cluster.x-k8s.io -A
+  358  2023-03-29 17:35:28 root free
+  359  2023-03-29 17:35:32 root free -g
+  360  2023-03-29 17:36:45 root cat /proc/cpuinfo 
+  361  2023-03-29 17:37:05 root free -g
+  362  2023-03-29 17:38:55 root ls
+  363  2023-03-29 17:39:05 root cd sylva-core/
+  364  2023-03-29 17:39:07 root ls
+  365  2023-03-29 17:40:00 root history | grep boot
+  366  2023-03-29 17:40:22 root ./apply.sh environment-values/rke2-capd
+  367  2023-03-29 17:45:19 root ks
+  368  2023-03-29 17:45:20 root ls
+  369  2023-03-29 17:45:37 root history | grep rke2
+  370  2023-03-29 17:45:51 root history | grep export
+  371  2023-03-29 17:46:09 root ./apply.sh environment-values/rke2-capd
+  372  2023-03-29 17:47:49 root export KUBECONFIG=/root/mangement-cluster-conf 
+  373  2023-03-29 17:47:54 root ./apply.sh environment-values/rke2-capd
+  374  2023-03-29 21:20:54 root history
+  375  2023-03-29 21:21:10 root ls
+  376  2023-03-29 21:21:22 root history > cmd.txt
