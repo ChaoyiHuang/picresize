@@ -1,3 +1,94 @@
+root@onap-huangchaoyi:/tmp/zot/sbom# ls
+blobs  index.json  oci-layout
+root@onap-huangchaoyi:/tmp/zot/sbom# cat index.json
+{"schemaVersion":2,"manifests":[{"mediaType":"application/vnd.oci.image.manifest.v1+json","digest":"sha256:58ff1bc6e5d409ba69dad70a8fdfc45e7203f16f11d9c92047810c926ba85d7c","size":480,"annotations":{"org.opencontainers.image.ref.name":"demo"}},{"mediaType":"application/vnd.oci.image.manifest.v1+json","digest":"sha256:e4e06e3f52594950dc5d2c9e3709f5f8011ffe5cd6e6c3fd9ba7317f9dc4514f","size":690}]}root@onap-huangchaoyi:/tmp/zot/sbom#
+root@onap-huangchaoyi:/tmp/zot/sbom#
+root@onap-huangchaoyi:/tmp/zot/sbom# cat blobs/sha256/e4e06e3f52594950dc5d2c9e3709f5f8011ffe5cd6e6c3fd9ba7317f9dc4514f
+{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","config":{"mediaType":"application/vnd.example.sbom","digest":"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a","size":2},"layers":[{"mediaType":"application/vnd.oci.image.layer.v1.tar","digest":"sha256:88e42eb2b3944d341ce011a8e31c406ab52fa770a01d9fc540fbf3c3c621f7ca","size":291,"annotations":{"org.opencontainers.image.title":"kube-apiserver.json"}}],"subject":{"mediaType":"application/vnd.oci.image.manifest.v1+json","digest":"sha256:58ff1bc6e5d409ba69dad70a8fdfc45e7203f16f11d9c92047810c926ba85d7c","size":480},"annotations":{"org.opencontainers.image.created":"2023-08-04T14:13:00Z"}}root@onap-huangchaoyi:/tmp/zot/sbom#
+root@onap-huangchaoyi:/tmp/zot/sbom# cat blobs/sha256/58ff1bc6e5d409ba69dad70a8fdfc45e7203f16f11d9c92047810c926ba85d7c
+{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","artifactType":"application/vnd.example.sbom","config":{"mediaType":"application/vnd.oci.empty.v1+json","size":2,"digest":"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"layers":[{"mediaType":"application/octet-stream","size":963,"digest":"sha256:c3bb982cb1da37ccab3911ab6202a8b5d142b4194f27121e0cb270af6fe6a9e6","annotations":{"org.opencontainers.image.title":"sbom.json"}}]}root@onap-huangchaoyi:/tmp/zot/sbom#
+root@onap-huangchaoyi:/tmp/zot/sbom# cat blobs/sha256/c3bb982cb1da37ccab3911ab6202a8b5d142b4194f27121e0cb270af6fe6a9e6
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "version": 1,
+  "metadata": {
+    "tools": [
+      {
+        "vendor": "Codenotary",
+        "name": "vcn",
+        "version": "v1.0.2-dev"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "name": "."
+    }
+  },
+  "components": [
+    {
+      "bom-ref": ".-1",
+      "type": "library",
+      "name": "github.com/rakyll/statik",
+      "version": "v0.1.7",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "385dd009952ec8fc6e1843fb078ca951aeec07f887b6a3930d865718cf0a39d4"
+        }
+      ],
+      "licenses": [
+        {
+          "expression": "Apache-2.0"
+        }
+      ],
+      "purl": "pkg:golang/github.com%!F(MISSING)rakyll%!F(MISSING)statik@v0.1.7",
+      "properties": [
+        {
+          "name": "LinkType",
+          "value": "direct"
+        },
+        {
+          "name": "TrustLevel",
+          "value": "TRUSTED"
+        }
+      ]
+    }
+  ]
+}
+root@onap-huangchaoyi:/tmp/zot/sbom#
+root@onap-huangchaoyi:/tmp/zot/sbom# cat blobs/sha256/88e42eb2b3944d341ce011a8e31c406ab52fa770a01d9fc540fbf3c3c621f7ca
+{
+    "components": [
+    {
+      "type": "library",
+      "name": "github.com/rakyll/statik",
+      "version": "v0.1.7",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "385dd009952ec8fc6e1843fb078ca951aeec07f887b6a3930d865718cf0a39d4"
+        }
+      ]
+ } ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {"schemaVersion":2,"manifests":[{"mediaType":"application/vnd.oci.image.manifest.v1+json","digest":"sha256:9fbf8eabab78f5dfa779728066ed04c71c53e24742cfbf090442b95de14c29d3","size":484,"annotations":{"org.opencontainers.image.ref.name":"demo"}},{"mediaType":"application/vnd.oci.image.manifest.v1+json","digest":"sha256:4dca9a81a12d5de4facffa97fbcac8cbadb9a4b0cf5ec85661ddfbafdb865a7a","size":654}]}
 
 
