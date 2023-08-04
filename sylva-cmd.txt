@@ -1,3 +1,24 @@
+{"schemaVersion":2,"manifests":[{"mediaType":"application/vnd.oci.image.manifest.v1+json","digest":"sha256:9fbf8eabab78f5dfa779728066ed04c71c53e24742cfbf090442b95de14c29d3","size":484,"annotations":{"org.opencontainers.image.ref.name":"demo"}},{"mediaType":"application/vnd.oci.image.manifest.v1+json","digest":"sha256:4dca9a81a12d5de4facffa97fbcac8cbadb9a4b0cf5ec85661ddfbafdb865a7a","size":654}]}
+
+
+{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","artifactType":"application/vnd.oci.compatibility","config":{"mediaType":"application/vnd.oci.empty.v1+json","size":2,"digest":"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"layers":[{"mediaType":"application/vnd.oci.compatibility.json","size":55,"digest":"sha256:dfb82498d99d166aed251c6920ee2979e9bfe47048b2e679278e1ea7f167ffa1"}],"annotations":{"org.oci.compatibility.format":"json"},"subject":{"mediaType":"application/vnd.oci.image.manifest.v1+json","size":484,"digest":"sha256:9fbf8eabab78f5dfa779728066ed04c71c53e24742cfbf090442b95de14c29d3"}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 root@onap-huangchaoyi:/tmp/zot/regartifact2# grep -r "subject" .
 ./blobs/sha256/4dca9a81a12d5de4facffa97fbcac8cbadb9a4b0cf5ec85661ddfbafdb865a7a:{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","artifactType":"application/vnd.oci.compatibility","config":{"mediaType":"application/vnd.oci.empty.v1+json","size":2,"digest":"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"layers":[{"mediaType":"application/vnd.oci.compatibility.json","size":55,"digest":"sha256:dfb82498d99d166aed251c6920ee2979e9bfe47048b2e679278e1ea7f167ffa1"}],"annotations":{"org.oci.compatibility.format":"json"},"subject":{"mediaType":"application/vnd.oci.image.manifest.v1+json","size":484,"digest":"sha256:9fbf8eabab78f5dfa779728066ed04c71c53e24742cfbf090442b95de14c29d3"}}
 root@onap-huangchaoyi:/tmp/zot/regartifact2# cat index.json
