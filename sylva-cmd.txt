@@ -1,3 +1,75 @@
+regctl artifact put --artifact-type application/vnd.oci.chain localhost:8888/chain:v1 -f chain.md
+regctl manifest get localhost:8888/chain:v1
+Name:                               localhost:8888/chain:v1
+MediaType:                          application/vnd.oci.image.manifest.v1+json
+ArtifactType:                       application/vnd.oci.chain
+Digest:                             sha256:68d77e16ee97c5741edd6185c25e469a4cd5f52e32cdc8f20eddce5e8238093a
+Total Size:                         46.000B
+
+Config:
+  Digest:                           sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  MediaType:                        application/vnd.oci.empty.v1+json
+  Size:                             2B
+
+Layers:
+
+  Digest:                           sha256:7c8ed273d1808b133b0d8cdcdc66c02210731917d110385e47f589ca46b82772
+  MediaType:                        application/octet-stream
+  Size:                             46B
+  Annotations:
+    org.opencontainers.image.title: chain.md
+
+
+regctl artifact put --artifact-type application/vnd.oci.sbom localhost:8888/sbom-md:v1 -f sbom.md
+regctl manifest get localhost:8888/sbom-md:v1                                Name:                               localhost:8888/sbom-md:v1
+MediaType:                          application/vnd.oci.image.manifest.v1+json
+ArtifactType:                       application/vnd.oci.sbom
+Digest:                             sha256:2c79045f1b254bec812b0d2811f7308c172a2a5c50f43f2e22e27665802297cd
+Total Size:                         46.000B
+
+Config:
+  Digest:                           sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  MediaType:                        application/vnd.oci.empty.v1+json
+  Size:                             2B
+
+Layers:
+
+  Digest:                           sha256:7c8ed273d1808b133b0d8cdcdc66c02210731917d110385e47f589ca46b82772
+  MediaType:                        application/octet-stream
+  Size:                             46B
+  Annotations:
+    org.opencontainers.image.title: sbom.md
+
+
+regctl index create localhost:8888/indexdemo:v1 --ref=localhost:8888/chain:v1
+
+regctl index add  localhost:8888/indexdemo:v1 --ref=localhost:8888/sbom-md:v1
+
+regctl manifest get localhost:8888/indexdemo:v1
+Name:        localhost:8888/indexdemo:v1
+MediaType:   application/vnd.oci.image.index.v1+json
+Digest:      sha256:62358cbe86237abd117fd60de0dc774f08ebd7e394937398f0dc11b033eef074
+
+Manifests:
+
+  Name:      localhost:8888/indexdemo:v1@sha256:68d77e16ee97c5741edd6185c25e469a4cd5f52e32cdc8f20eddce5e8238093a
+  Digest:    sha256:68d77e16ee97c5741edd6185c25e469a4cd5f52e32cdc8f20eddce5e8238093a
+  MediaType: application/vnd.oci.image.manifest.v1+json
+
+  Name:      localhost:8888/indexdemo:v1@sha256:2c79045f1b254bec812b0d2811f7308c172a2a5c50f43f2e22e27665802297cd
+  Digest:    sha256:2c79045f1b254bec812b0d2811f7308c172a2a5c50f43f2e22e27665802297cd
+  MediaType: application/vnd.oci.image.manifest.v1+json
+
+
+
+
+
+
+
+
+
+
+
 root@onap-huangchaoyi:/tmp/zot/sbom# ls
 blobs  index.json  oci-layout
 root@onap-huangchaoyi:/tmp/zot/sbom# cat index.json
