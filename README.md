@@ -1,3 +1,7 @@
+
+https://sessionize.com/app/speaker/session/invite/577415/ciouvya
+
+
 https://rentola.nl/en/listings/julianaplein-7-frankendael-1097dn-amsterdam-bc6773
 
 https://www.kamer.nl/en/rent/apartment/amsterdam/512533/gustav-mahlerlaan/
