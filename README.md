@@ -1,15 +1,3 @@
-
-https://sessionize.com/app/speaker/session/invite/577415/ciouvya
-
-
-https://rentola.nl/en/listings/julianaplein-7-frankendael-1097dn-amsterdam-bc6773
-
-https://www.kamer.nl/en/rent/apartment/amsterdam/512533/gustav-mahlerlaan/
-
-https://www.kamer.nl/en/rent/apartment/amsterdam/463279/albert-cuypstraat/
-
-https://www.kamer.nl/en/rent/apartment/amsterdam/467594/albert-cuypstraat/
-
 # picresize to demonstrate edge cloud computing as a service, based on Kubernetes
 
 ***ALL SOURCE CODE IS HARD CODE TO MAKE THE DEMO/IDEA WORK ASAP***
