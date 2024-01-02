@@ -1,3 +1,10 @@
+Start docker registry docker run -d -p 5000:5001 --name registry registry:2.8.3
+Copy busybox image skopeo copy --insecure-policy --dest-tls-verify false --src-tls-verify false  --multi-arch all -f oci docker://busybox:latest docker://localhost:5001/busybox:latest
+Fetch available repositories curl http://localhost:5001/v2/_catalog
+Fetch image index manifest curl -H "Accept: application/vnd.oci.image.index.v1+json" http://localhost:5001/v2/busybox/manifests/latest
+Fetch image manifest curl -H "Accept: application/vnd.oci.image.manifest.v1+json" http://localhost:5001/v2/busybox/manifests/sha256:<digest>
+
+
 root@onap-huangchaoyi:~/sylva-core# cat environment-values/rke2-capd/values.yaml
 ---
 
